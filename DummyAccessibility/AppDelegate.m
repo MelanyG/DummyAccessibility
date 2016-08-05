@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "ACCVC.h"
 
 @interface AppDelegate ()
 
@@ -16,6 +17,11 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+   
+    ACCVC *x  = [ACCVC new];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:x];
+    self.window.rootViewController = navController;
+   
     // Override point for customization after application launch.
     return YES;
 }
