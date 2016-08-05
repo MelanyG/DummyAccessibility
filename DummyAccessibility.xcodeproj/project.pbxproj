@@ -144,8 +144,8 @@
 			isa = PBXGroup;
 			children = (
 				3940224B1D54D94300224B36 /* GridViewGeneralCellContentView.h */,
-				3940224C1D54D94300224B36 /* GridViewGeneralCellContentView.m */,
 				3940224D1D54D94300224B36 /* TableViewLiveSectionGridCell.h */,
+				3940224C1D54D94300224B36 /* GridViewGeneralCellContentView.m */,
 				3940224E1D54D94300224B36 /* TableViewLiveSectionGridCell.m */,
 				394022261D54D1E800224B36 /* AppDelegate.h */,
 				394022271D54D1E800224B36 /* AppDelegate.m */,
