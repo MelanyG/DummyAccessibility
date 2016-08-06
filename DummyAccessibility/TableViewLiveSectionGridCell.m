@@ -15,16 +15,7 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 
 @interface TableViewLiveSectionGridCell ()
 {
-//    NSMutableArray *_contentArray;
-//    NSArray * _rssThumbnailUnderwritesOfStationLayout;
-//    NSInteger _numberOfItemsToFitWidth;
-//    UIActivityIndicatorView *_loadingIndicator;
-//    
-//    NSTimer *_autoscrollTimer;
-//    NSInteger _indexOfUnderwriting;
-    NSDate *pauseStart;
-    NSDate *previousFireDate;
-    CGRect _visibleRect;
+
 }
 @property (strong, nonatomic) WTURLImageViewPreset *preset;
 @property (nonatomic) NSInteger indexOfAutoScroll;
@@ -56,168 +47,6 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
      return self;
 }
 
-//- (void)setStationLayout:(StationLayout *)stationLayout
-//{
-//    if (stationLayout.identificator != _stationLayout.identificator || self.forceToUpdate)
-//    {
-//        self.userScrollAction = NO;
-//        if (stationLayout.underwritingAdFrequency > 0 && stationLayout.underwritingAdInitial > 0) {
-//            UnderwritingManager *underwriteManager = [UnderwritingManager sharedManager];
-//            _rssThumbnailUnderwritesOfStationLayout = underwriteManager.rssThumbnailUnderwrites;
-//            _indexOfUnderwriting = stationLayout.underwritingAdInitial - 1;
-//            self.isAddOneUnderwritingItem = NO;
-//        } else if (stationLayout.underwritingAdFrequency == 0 && stationLayout.underwritingAdInitial > 0) {
-//            UnderwritingManager *underwriteManager = [UnderwritingManager sharedManager];
-//            _rssThumbnailUnderwritesOfStationLayout = underwriteManager.rssThumbnailUnderwrites;
-//            _indexOfUnderwriting = stationLayout.underwritingAdInitial - 1;
-//            self.isAddOneUnderwritingItem = YES;
-//        }
-//        else{
-//            _rssThumbnailUnderwritesOfStationLayout = nil;
-//            _indexOfUnderwriting = NSNotFound;
-//            self.isAddOneUnderwritingItem = NO;
-//        }
-//        
-//        [_loadingIndicator stopAnimating];
-//        _stationLayout = stationLayout;
-//        
-//        NSInteger delta = 10;
-//        if (_loadingIndicator == nil)
-//        {
-//            _loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-//            _loadingIndicator.hidesWhenStopped = YES;
-//            _loadingIndicator.autoresizingMask = UIViewAutoresizingNone;
-//            if ([RBMConfig sharedConfiguration].activityIndicatorColor) {
-//                [_loadingIndicator setColor:[RBMConfig sharedConfiguration].activityIndicatorColor];
-//            }
-//        }
-//        
-//        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-//        if (orientation == UIInterfaceOrientationPortrait)
-//        {
-//            _loadingIndicator.center = CGPointMake([UIScreen mainScreen].bounds.size.width / 2, self.stationLayout.displayStyleSize.height * self.stationLayout.verticalCount / 2 + delta);
-//        }
-//        else
-//        {
-//            _loadingIndicator.center = CGPointMake([UIScreen mainScreen].bounds.size.height / 2, self.stationLayout.displayStyleSize.height * self.stationLayout.verticalCount / 2 + delta);
-//        }
-//        
-//        [_autoscrollTimer invalidate];
-//        
-//        [self addSubview:_loadingIndicator];
-//        [_loadingIndicator startAnimating];
-//        
-//        NSInteger count = _contentArray.count;
-//        for (NSInteger i = (count - 1); i >= 0; i--)
-//        {
-//            [self.gridView removeObjectAtIndex:i animated:NO];
-//        }
-//
-//        [_contentArray removeAllObjects];
-//        
-//        [self initAndConfigureGridView];
-//        _numberOfItemsToFitWidth = [self calculateNumberOfItemsToFitWidth];
-//        
-//        if (self.stationLayout.fitWidth)
-//        {
-//            NSInteger screenWidth = [UIScreen mainScreen].bounds.size.width;
-//            NSInteger itemsWidthForOneRow = (_numberOfItemsToFitWidth % 2) == 0 ? (_numberOfItemsToFitWidth / self.stationLayout.verticalCount) : (_numberOfItemsToFitWidth / self.stationLayout.verticalCount + 1);
-//            NSInteger itemsWidth = itemsWidthForOneRow * self.stationLayout.displayStyleSize.width;
-//            NSInteger spacingToUse = (screenWidth - itemsWidth) / (itemsWidthForOneRow - 1 + 2); // 2 paddings: left and right
-//            self.gridView.itemSpacing = spacingToUse;
-//        }
-//        
-//        self.stationLayoutImageOverlay = nil;
-//        __weak TableViewLiveSectionGridCell *weakSelf = self;
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-//            NSArray *elementOverlays = [ElementOverlay elementsOfType:ElementOverlayTypeThumbnail inArray:weakSelf.stationLayout.elementOverlays];
-//            NSString *overlayImageURL = nil;
-//            
-//            if (elementOverlays.count > 0)
-//            {
-//                ElementOverlay *elementOverlay = elementOverlays[0];
-//                overlayImageURL = elementOverlay.value;
-//                if (overlayImageURL != nil && overlayImageURL.length > 0)
-//                {
-//                    CGSize size = [weakSelf GMGridView:nil sizeForItemsInInterfaceOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
-//                    CGSize desiredSize = weakSelf.stationLayout.displayStyleSizeForThumbnail;
-//                    if (weakSelf.stationLayout.showCategoryName)
-//                    {
-//                        desiredSize.height -= kLiveCategoryHeight;
-//                        desiredSize.width = (kLiveCategoryHeight % 2 == 0) ? desiredSize.width : desiredSize.width + 1;
-//                    }
-//                    TextOverlayPosition textOverlayPosition = weakSelf.stationLayout.textOverlayPosition;
-//                    NSString *overlayPositionAsString = [StationLayout getStringRepresentationOfTextOverlayPosition:textOverlayPosition];
-//                    NSInteger heightCheck = [StationLayout getCorrectHeightCheckRegardingTextOverlayPosition:textOverlayPosition];
-//                    if (textOverlayPosition == TextOverlayPositionBelow)
-//                    {
-//                        desiredSize.height -= (size.height);
-//                        desiredSize.width += (1.75*size.height);
-//                    }
-//                    
-//                    NSString *finalImageURL = nil;
-//                    NSMutableString *postXML = nil;
-//                    postXML = [NSMutableString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><resize>"];
-//                    [postXML appendFormat:@"<width type=\"integer\">%ld</width>", (long)desiredSize.width];
-//                    [postXML appendFormat:@"<height type=\"integer\">%ld</height>", (long)desiredSize.height];
-//                    [postXML appendFormat:@"<heightcheck type=\"integer\">%ld</heightcheck>", (long)heightCheck];
-//                    [postXML appendFormat:@"<justify>%@</justify>", overlayPositionAsString];
-//                    [postXML appendFormat:@"<url>%@</url>", [NSString stringWithFormat:@"<![CDATA[%@]]>", overlayImageURL]];
-//                    [postXML appendFormat:@"</resize>"];
-//                    finalImageURL = [NSString stringWithFormat:@"%@resizer/%@", [RBMConfig sharedConfiguration].resizerURL, [postXML stringFromMD5]];
-//                    NSURL *urlToSend = [NSURL URLWithString:finalImageURL];
-//                    
-//                    //Response data object
-//                    NSData *returnData = [[NSData alloc]init];
-//                    //Build the Request
-//                    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:urlToSend];
-//                    [request setHTTPMethod:@"POST"];
-//                    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[postXML length]] forHTTPHeaderField:@"Content-length"];
-//                    [request setHTTPBody:[postXML dataUsingEncoding:NSUTF8StringEncoding]];
-//                    
-//                    //Send the Request
-//                    NSHTTPURLResponse* response = nil;
-//                    NSError *error = nil;
-//                    returnData = [NSURLConnection sendSynchronousRequest: request returningResponse:&response error:&error];
-//                    if (error == nil && response.statusCode == 200) {
-//                        weakSelf.stationLayoutImageOverlay = [UIImage imageWithData:returnData];
-//                    }
-//                }
-//            }
-//            
-//            NSUserDefaults *userSetting = [NSUserDefaults standardUserDefaults];
-//            NSDictionary * authorizationSettings = [userSetting objectForKey:kAuthorizationSettingsKey];
-//            MWFeedParser *parser;
-//            if (authorizationSettings && weakSelf.stationLayout.authenticateMode == DisplayModeAuthenticated)
-//            {
-//                NSString *base64EncodedCredentials = [weakSelf prepareAuthorizationStringForUser:[authorizationSettings objectForKey:kAuthorizationKeyEmail] andPassword:[authorizationSettings objectForKey:kAuthorizationKeyPassword]];
-//                parser = [[MWFeedParser alloc] initWithFeedURL:[NSURL URLWithString:weakSelf.stationLayout.feedURL] andAuthorizationString:base64EncodedCredentials];
-//            } else if ([Utility isAllowToShowAuthenticatedLayout] && weakSelf.stationLayout.authenticateMode == DisplayModeAuthenticated) {
-//                NSString *base64EncodedCredentials = [weakSelf prepareAuthorizationStringForUser:[RBMConfig sharedConfiguration].accountAuthenticatedLayout andPassword:[RBMConfig sharedConfiguration].passwordAuthenticatedLayout];
-//                parser = [[MWFeedParser alloc] initWithFeedURL:[NSURL URLWithString:weakSelf.stationLayout.feedURL] andAuthorizationString:base64EncodedCredentials];
-//            } else {
-//                parser = [[MWFeedParser alloc] initWithFeedURL:[NSURL URLWithString:weakSelf.stationLayout.feedURL]];
-//            }
-//            parser.delegate = weakSelf;
-//            parser.feedParseType = ParseTypeFull;
-//            parser.connectionType = ConnectionTypeSynchronously;
-//            [parser parse];
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                weakSelf.forceToUpdate = NO;
-//                [_loadingIndicator stopAnimating];
-//            	[_loadingIndicator removeFromSuperview];
-//                
-//                if (stationLayout.autoscrollDelay)
-//                {
-//                    weakSelf.indexOfAutoScroll = 0;
-//                    weakSelf.autoSctollDirection = AutoSctollDirectionRight;
-//                    [weakSelf startTimer];
-//                }
-//            });
-//        });
-//    }
-//}
-
 - (void)initAndConfigureGridView
 {
     GMGridView *gmGridView = [[GMGridView alloc] initWithFrame:self.bounds];
@@ -247,136 +76,6 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 //    [self.gridView setIsAccessibilityElement:NO];
 }
 
-#pragma mark - MWFeedParser Delegate
-//
-//- (void)feedParser:(MWFeedParser *)parser didParseFeedItem:(MWFeedItem *)item
-//{
-//    if (_contentArray.count >= kMaxNewsItems || (self.stationLayout.fitWidth && _contentArray.count >= _numberOfItemsToFitWidth))
-//    {
-//        [self feedParserDidFinish:parser];
-//        [parser stopParsing];
-//    }
-//    else
-//    {
-//        __weak TableViewLiveSectionGridCell *weakSelf = self;
-//        
-//        if (item.vimeoID > 0) {
-//            NSString *host = [NSString stringWithFormat:@"http://vimeo.com/api/v2/video/%d.json",item.vimeoID ];
-//            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:host]];
-//            [request setHTTPMethod:@"GET"];
-//            NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-//            if (returnData != nil) {
-//                NSArray *result = [NSJSONSerialization JSONObjectWithData:returnData options:0 error:nil];
-//                if (result != nil) {
-//                    NSDictionary *videoInfo = [result objectAtIndex:0];
-//                    NSString *urlThumbnail = [videoInfo objectForKey:@"thumbnail_large"];
-//                    if (urlThumbnail != nil && urlThumbnail.length > 0) {
-//                        urlThumbnail = [videoInfo objectForKey:@"thumbnail_medium"];
-//                    }else if (urlThumbnail != nil && urlThumbnail.length > 0) {
-//                        urlThumbnail = [videoInfo objectForKey:@"thumbnail_large"];
-//                    }else if (urlThumbnail != nil && urlThumbnail.length > 0) {
-//                        urlThumbnail = nil;
-//                    }
-//                    item.thumbnailUrl = urlThumbnail;
-//                }
-//                
-//            }
-//            
-//        }
-//        dispatch_sync(dispatch_get_main_queue(), ^{
-//            
-//            
-//            if ((_stationLayout.underwritingAdFrequency > 0 || weakSelf.isAddOneUnderwritingItem) && _rssThumbnailUnderwritesOfStationLayout.count > 0) {
-//                BOOL isAddUnderwriting = NO;
-//                if (_indexOfUnderwriting != NSNotFound) {
-//                    if (_contentArray.count > 0) {
-//                        if (_contentArray.count % _indexOfUnderwriting == 0) {
-//                            isAddUnderwriting = YES;
-//                        }
-//                    } else if (_contentArray.count == 0 && _indexOfUnderwriting == 0) {
-//                        isAddUnderwriting = YES;
-//                    }
-//                        
-//                }
-//                
-//                if (isAddUnderwriting)
-//                {
-//                    Underwriting *underwriting;
-//                    if (_stationLayout.underwritingID)
-//                    {
-//                        underwriting = [weakSelf getUnderwritingIfExist:_stationLayout.underwritingID];
-//                    }
-//                    else {
-//                        underwriting = [weakSelf randomUnderwrite];
-//                    }
-//                    
-//                    if (underwriting)
-//                    {
-//                        VisualAd *adOfThumbnail;
-//                        NSArray *arrOfVisualAd = [Underwriting getVisualAdsWithStyle:VisualAdStyleRSSThumbnail fromArray:underwriting.visualAds];
-//                        if (arrOfVisualAd.count > 0) {
-//                            adOfThumbnail = [arrOfVisualAd objectAtIndex:0];
-//                            MWFeedUnderwritingItem * underwritingItem;
-//                            
-//                            if ([MWFeedDFPItem isUrlOfDFP:[adOfThumbnail.visualURL absoluteString]]) {
-//                                underwritingItem = [[MWFeedDFPItem alloc] init];
-//                            } else {
-//                                underwritingItem = [[MWFeedUnderwritingItem alloc] init];
-//                            }
-//                            
-//                            underwritingItem.underwritingID = underwriting.underwritingID;
-//                            underwritingItem.title = nil;
-//                            underwritingItem.link = [adOfThumbnail.clickURL absoluteString];
-//                            underwritingItem.displayMethod = SelectDisplayMethodInBrowser;
-//                            underwritingItem.imageURL = adOfThumbnail.visualURL;
-//                            [_contentArray addObject:underwritingItem];
-//                            [weakSelf.gridView insertObjectAtIndex:(_contentArray.count - 1) withAnimation:GMGridViewItemAnimationFade];
-//                            [weakSelf.gridView scrollToObjectAtIndex:0 atScrollPosition:GMGridViewScrollPositionNone animated:NO];
-//                            
-//                            if (_stationLayout.underwritingID)
-//                            {
-//                                _indexOfUnderwriting = _contentArray.count + _stationLayout.underwritingAdFrequency;
-//                            }
-//                            else if (_stationLayout.underwritingID == 0 || _stationLayout.underwritingID == NSNotFound)
-//                            {
-//                                _indexOfUnderwriting = _contentArray.count + _stationLayout.underwritingAdFrequency;
-//                            }
-//                            
-//                            if (weakSelf.isAddOneUnderwritingItem) {
-//                                _indexOfUnderwriting = NSNotFound;
-//                                weakSelf.isAddOneUnderwritingItem = NO;
-//                            }
-//                        }
-//                    }
-//                    else
-//                    {
-//                        _indexOfUnderwriting = NSNotFound;
-//                    }
-//                }
-//                
-//            }
-//            [_contentArray addObject:[]];
-//            [weakSelf.gridView insertObjectAtIndex:(_contentArray.count - 1) withAnimation:GMGridViewItemAnimationFade];
-//            [weakSelf.gridView scrollToObjectAtIndex:0 atScrollPosition:GMGridViewScrollPositionNone animated:NO];
-//        });
-//    }
-//    
-//}
-//
-//- (void)feedParserDidFinish:(MWFeedParser *)parser
-//{
-//    [self reAdjustUnderwritingItems];
-//    __weak TableViewLiveSectionGridCell *weakSelf = self;
-//    dispatch_sync(dispatch_get_main_queue(), ^{
-//        [weakSelf.gridView reloadData];
-//    });
-//}
-//
-//- (void)feedParser:(MWFeedParser *)parser didFailWithError:(NSError *)error
-//{
-//    NSLog(@"Failed to parse news feed. %@ %@", error, [error userInfo]);
-//}
-
 
 #pragma mark - GMGridView Delegates
 
@@ -395,7 +94,6 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 - (GMGridViewCell *)GMGridView:(GMGridView *)gridView cellForItemAtIndex:(NSInteger)index
 {
     CGSize size = [self GMGridView:gridView sizeForItemsInInterfaceOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
-    //static NSString *CellIdentifier = @"GenericCell";
     
    GMGridViewCell *cell = [gridView dequeueReusableCell];
     
@@ -416,12 +114,20 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
     Item *feedItem = _contentArray[index];
        GridViewGeneralCellContentView *contentView = (GridViewGeneralCellContentView *)cell.contentView;
     cell.layer.shadowOpacity = 0;
-    //contentView.transparentImageView.hidden = YES;
-
 
         contentView.textLabel.text = feedItem.textLabel;
-    cell.contentView = contentView.imageView;
+    [contentView.imageView setURL:[NSURL URLWithString:feedItem.imageLink] withPreset:self.preset];
+    cell.contentView = contentView;
      return cell;
+}
+
+- (void)GMGridView:(GMGridView *)gridView didTapOnItem:(GMGridViewCell *)cell atIndex:(NSInteger)position {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"SELECTED"
+                                                    message:@"Dee dee doo doo."
+                                                   delegate:self
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    [alert show];
 }
 
 #pragma mark - SetUp WTURLImageView method

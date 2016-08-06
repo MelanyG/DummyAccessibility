@@ -3,6 +3,7 @@
 
 
 #import <UIKit/UIKit.h>
+#import "WTURLImageView/WTURLImageView.h"
 
 @class StationLayout;
 @class URLImageView;
@@ -19,15 +20,14 @@ typedef NS_ENUM(NSInteger, GridViewCellStyle)
 @interface GridViewGeneralCellContentView : UIView
 
 @property (nonatomic) GridViewCellStyle cellStyle;
-@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) WTURLImageView *imageView;
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, strong) UILabel *textLabel;
 @property (nonatomic, strong) UILabel *categoryLabel;
-@property (nonatomic, strong) UIImageView *transparentImageView;
+@property (nonatomic, strong) WTURLImageView *transparentImageView;
 @property (nonatomic, strong) NSMutableArray *accessibilityElements;
 
 - (instancetype)initWithFrame:(CGRect)frame style:(GridViewCellStyle)style;
-- (NSInteger)calculateNumberOfLineBasedOn:(StationLayout *)stationLayout;
-//- (void)configureImageViewFrameForImage:(UIImage *)image;
-- (void) _recalculateAccessibilityElements;
+
+//- (void) _recalculateAccessibilityElements;
 @end

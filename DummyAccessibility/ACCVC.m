@@ -81,37 +81,19 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //    Station *activeStation = [self getItemAtIndex:[Utility getAppropriatePickerIndexFrom:self.appDelegate.liveStations] fromDataArray:self.appDelegate.liveStations];
-    //    StationLayout *layout = activeStation.stationLayoutsForLive[indexPath.section];
-//    StationLayout *layout = self.activeStationLayoutsForLive[indexPath.section];
-//    NSString *index = [NSString stringWithFormat:@"%ld", (long)indexPath.section];
-//    BOOL drawTopLine = NO;
-//    if (indexPath.section == 0)
-//    {
-//        drawTopLine = YES;
-//    }
+
     TableViewLiveSectionGridCell *cell;
     if([_tableViewCells count] == 2) {
      cell = _tableViewCells[indexPath.section];
     }
-//    if (layout.layoutType == LayoutTypeRSS)
-//    {
         if (!cell)
         {
             cell = [[TableViewLiveSectionGridCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil withArray:_datasource];
-            //  [cell setIsAccessibilityElement:NO];
-            
             _tableViewCells[indexPath.section] = cell;
             
             ((TableViewLiveSectionGridCell *)cell).navigationController = self.navigationController;
         }
         
-//        ((TableViewLiveSectionGridCell *)cell).stationLayout = layout;
-//        if (layout.isDisplayStyleFitWidth) {
-            [((TableViewLiveSectionGridCell *)cell).gridView reloadData];
-//        }
-//    }
-    //   [cell setIsAccessibilityElement:NO];
     return cell;
 }
 

@@ -4,7 +4,7 @@
 
 
 #import "GridViewGeneralCellContentView.h"
-#import "WTURLImageView.h"
+
 
 #define kAspectRatioThreshold 1.22
 
@@ -16,7 +16,7 @@ NSInteger const kLiveCategoryHeight = 13;
 @property (nonatomic, assign) CGRect overlayRect;
 
 - (void)configureNewsStyle;
-- (void)configureOnDemandStyle;
+
 
 @end
 
@@ -54,7 +54,6 @@ NSInteger const kLiveCategoryHeight = 13;
         UILabel *labelTitle = [[UILabel alloc] initWithFrame:labelFrame];
         labelTitle.backgroundColor = [UIColor clearColor];
         labelTitle.textColor = [UIColor redColor];
-        //labelTitle.font = [UIFont systemFontOfSize:kLiveCategoryHeight - 3];
         labelTitle.numberOfLines = 1;
         self.categoryLabel = labelTitle;
         [self addSubview:labelTitle];
@@ -71,18 +70,14 @@ NSInteger const kLiveCategoryHeight = 13;
     viewInset.backgroundColor = [UIColor clearColor];
     [self addSubview:viewInset];
     
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:viewInset.frame];
+    WTURLImageView *imageView = [[WTURLImageView alloc] initWithFrame:viewInset.frame];
   
     self.imageViewRect = imageView.frame;
     imageView.contentMode = UIViewContentModeScaleToFill;
     [self addSubview:imageView];
     self.imageView = imageView;
    // self.imageView.isAccessibilityElement = NO;
-//        UIImageView *transparentImageView = [[UIImageView alloc] initWithFrame:viewInset.frame];
-//        transparentImageView.image = [UIImage imageNamed:@"transparent-overlay"];
-//        transparentImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-//        [self addSubview:transparentImageView];
-//        self.transparentImageView = transparentImageView;
+
     UIView *overlay = nil;
     
  
@@ -94,14 +89,13 @@ NSInteger const kLiveCategoryHeight = 13;
         [self addSubview:overlay];
         
         padding = 10;
-       // Class labelClass = [RBMConfig sharedConfiguration].centerJustifyNewsText ? [UILabel class] : [VerticalAlignedLabel class];
         self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(overlay.frame.origin.x + padding, overlay.frame.origin.y, overlay.frame.size.width - 2*padding, overlay.frame.size.height)];
         self.textLabel.backgroundColor = [UIColor clearColor];
         self.textLabel.clipsToBounds = NO;
         self.textLabel.textColor = [UIColor orangeColor];
         self.textLabel.textAlignment = NSTextAlignmentLeft;
         int size = 15;
-        //self.textLabel.font = [UIFont fontWithName:[RBMConfig sharedConfiguration].newsTextFont size:size];
+
         self.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         
        //[self.textLabel setIsAccessibilityElement:NO];
