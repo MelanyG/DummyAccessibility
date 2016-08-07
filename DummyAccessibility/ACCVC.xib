@@ -17,16 +17,8 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="3w7-sc-TT9">
-                    <rect key="frame" x="0.0" y="50" width="600" height="550"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <connections>
-                        <outlet property="dataSource" destination="-1" id="dpo-Ge-XKf"/>
-                        <outlet property="delegate" destination="-1" id="cl1-pf-xha"/>
-                    </connections>
-                </tableView>
                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="DAX-Yc-0cL">
-                    <rect key="frame" x="0.0" y="0.0" width="600" height="51"/>
+                    <rect key="frame" x="0.0" y="60" width="600" height="51"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="50" id="zX7-JZ-b7c"/>
                     </constraints>
@@ -35,12 +27,20 @@
                         <segment title="Second"/>
                     </segments>
                 </segmentedControl>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" style="plain" separatorStyle="default" rowHeight="196" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="3w7-sc-TT9">
+                    <rect key="frame" x="0.0" y="110" width="600" height="490"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="dpo-Ge-XKf"/>
+                        <outlet property="delegate" destination="-1" id="cl1-pf-xha"/>
+                    </connections>
+                </tableView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="3w7-sc-TT9" firstAttribute="top" secondItem="DAX-Yc-0cL" secondAttribute="bottom" id="8fr-Tl-XqJ"/>
                 <constraint firstItem="DAX-Yc-0cL" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="AHV-3H-RQE"/>
-                <constraint firstItem="DAX-Yc-0cL" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Gf4-p1-y0M"/>
+                <constraint firstItem="DAX-Yc-0cL" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="60" id="Gf4-p1-y0M"/>
                 <constraint firstAttribute="trailing" secondItem="3w7-sc-TT9" secondAttribute="trailing" id="RXV-0M-10x"/>
                 <constraint firstItem="3w7-sc-TT9" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="nKf-eh-pnu"/>
                 <constraint firstAttribute="bottom" secondItem="3w7-sc-TT9" secondAttribute="bottom" id="ocv-2D-tpt"/>

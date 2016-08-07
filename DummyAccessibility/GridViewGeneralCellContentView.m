@@ -4,7 +4,7 @@
 
 
 #import "GridViewGeneralCellContentView.h"
-
+#import "GMGridView.h"
 
 #define kAspectRatioThreshold 1.22
 
@@ -94,7 +94,7 @@ NSInteger const kLiveCategoryHeight = 13;
         self.textLabel.clipsToBounds = NO;
         self.textLabel.textColor = [UIColor orangeColor];
         self.textLabel.textAlignment = NSTextAlignmentLeft;
-        int size = 15;
+       // int size = 15;
 
         self.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         
@@ -120,7 +120,15 @@ NSInteger const kLiveCategoryHeight = 13;
 
 - (NSString *)accessibilityLabel
 {
-    return NSLocalizedString(self.textLabel.text, nil);
+    return [NSString stringWithFormat:@"%p, %@", self.superview, self.textLabel.text];
+    
+}
+
+- (void)accessibilityElementDidBecomeFocused
+{
+    GMGridView *collectionView = (GMGridView *)self.superview.superview;
+//    [collectionView scrollToItemAtIndexPath:[collectionView indexPathForCell:self] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally|UICollectionViewScrollPositionCenteredVertically animated:NO];
+    UIAccessibilityPostNotification(UIAccessibilityElementFocusedNotification, self);
 }
 
 @end

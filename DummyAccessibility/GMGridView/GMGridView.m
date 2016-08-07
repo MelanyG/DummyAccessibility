@@ -1484,7 +1484,7 @@ static const UIViewAnimationOptions kDefaultAnimationOptions = UIViewAnimationOp
         cell.alpha = 1;
         cell.backgroundColor = [UIColor clearColor];
         [_reusableCells addObject:cell];
-    }
+   }
 }
 
 - (GMGridViewCell *)dequeueReusableCell

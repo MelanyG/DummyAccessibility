@@ -65,7 +65,7 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
     [self.gridView removeFromSuperview];
     self.gridView = gmGridView;
     [self.contentView addSubview:gmGridView];
-    
+    NSLog(@"GridView %p", gmGridView);
     gmGridView.dataSource = self;
     gmGridView.actionDelegate = self;
     gmGridView.mainSuperView = self;
@@ -108,7 +108,7 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
         cell.contentView = [[GridViewGeneralCellContentView alloc] initWithFrame:cell.frame style:GridViewCellStyleNews ];
 //            UIAccessibilityElement *ae = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
 //          [_accessibilityElements addObject:ae];
-        NSLog(@"Address %p:", cell);
+        
     }
 
     Item *feedItem = _contentArray[index];
@@ -118,11 +118,12 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
         contentView.textLabel.text = feedItem.textLabel;
     [contentView.imageView setURL:[NSURL URLWithString:feedItem.imageLink] withPreset:self.preset];
     cell.contentView = contentView;
-     return cell;
+    NSLog(@"Address index %d - %p:", index, cell);
+        return cell;
 }
 
 - (void)GMGridView:(GMGridView *)gridView didTapOnItem:(GMGridViewCell *)cell atIndex:(NSInteger)position {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"SELECTED"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat: @"SELECTED %@", ((GridViewGeneralCellContentView*)cell.contentView).textLabel.text]
                                                     message:@"Dee dee doo doo."
                                                    delegate:self
                                           cancelButtonTitle:@"OK"
@@ -142,14 +143,10 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 
 #pragma mark - UIScrollView Delegate
 
-//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-//{
-//    if (self.stationLayout.autoscrollDelay)
-//    {
-//        [self stopTimer];
-//    }
-//    [[NSNotificationCenter defaultCenter] postNotificationName:kKillScrollingNotificationName object:nil];
-//}
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    UIAccessibilityPostNotification(UIAccessibilityAnnouncementDidFinishNotification, nil);
+}
 
 
 - (void)dealloc

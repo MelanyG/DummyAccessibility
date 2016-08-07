@@ -26,6 +26,7 @@
     [super viewDidLoad];
     _tableViewCells = [[NSMutableArray alloc]initWithCapacity:2];
     _datasource = [[NSMutableArray alloc]init];
+    [self.navigationController.navigationBar setBarStyle:UIBarStyleBlack];
     NSArray *imageArray = [[NSMutableArray alloc]initWithObjects:
                             @"https://static.pexels.com/photos/1848/nature-sunny-red-flowers.jpg",
                             @"http://all4desktop.com/data_images/original/4249535-raven.jpg",
@@ -67,7 +68,7 @@
     // Do any additional setup after loading the view, typically from a nib.
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
