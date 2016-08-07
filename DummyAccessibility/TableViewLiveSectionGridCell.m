@@ -42,7 +42,8 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
         _contentArray = [NSMutableArray array];
         _contentArray = (NSMutableArray *)array;
 //        _accessibilityElements = [NSMutableArray array];
-        [self initAndConfigureGridView];
+        //[self initAndConfigureGridView];
+        [self initAndConfigureCollectionView];
     }
      return self;
 }
@@ -76,6 +77,70 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 //    [self.gridView setIsAccessibilityElement:NO];
 }
 
+- (void)initAndConfigureCollectionView
+{
+    UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc] init];
+    CGRect size = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.height, 196 * 40);
+    _collectionView=[[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:layout];
+    _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    UICollectionViewFlowLayout *yourFlowLayout = [[UICollectionViewFlowLayout alloc]init];
+    [yourFlowLayout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
+    _collectionView.collectionViewLayout = yourFlowLayout;
+   // _collectionView.frame.size = CGSizeMake(196 *19, 196);
+    [_collectionView setDataSource:self];
+    [_collectionView setDelegate:self];
+    
+    [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
+    [_collectionView setBackgroundColor:[UIColor redColor]];
+    [self.contentView addSubview:_collectionView];
+
+}
+
+#pragma mark - CollectionView Delegates
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return 19;
+}
+
+// The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"cellIdentifier" forIndexPath:indexPath];
+    
+   // CGSize size = [self UICollectionView:_collectionView layout:nil sizeForItemAtIndexPath:indexPath];
+    
+   // GMGridViewCell *cell = [gridView dequeueReusableCell];
+    
+  
+       // cell = [[UICollectionViewCell alloc] init];
+        cell.layer.masksToBounds = NO;
+        int shadowBias = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ? 3 : 5;
+        cell.layer.shadowOffset = CGSizeMake(shadowBias, shadowBias);
+        cell.layer.shadowRadius = 5;
+        cell.layer.shadowPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, 196, 196)].CGPath;
+        //cell.contentView = [[GridViewGeneralCellContentView alloc] initWithFrame:cell.frame style:GridViewCellStyleNews ];
+        //            UIAccessibilityElement *ae = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+        //          [_accessibilityElements addObject:ae];
+        
+
+    
+    Item *feedItem = _contentArray[indexPath.item];
+ GridViewGeneralCellContentView *contentView = [[GridViewGeneralCellContentView alloc] initWithFrame:cell.frame style:GridViewCellStyleNews ];;
+    cell.layer.shadowOpacity = 0;
+    
+   contentView.textLabel.text = feedItem.textLabel;
+    [contentView.imageView setURL:[NSURL URLWithString:feedItem.imageLink] withPreset:self.preset];
+    [cell.contentView addSubview:contentView];
+    NSLog(@"Address index %d - %p:", indexPath.item, cell);
+    return cell;
+
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return CGSizeMake(190, 190);
+}
 
 #pragma mark - GMGridView Delegates
 

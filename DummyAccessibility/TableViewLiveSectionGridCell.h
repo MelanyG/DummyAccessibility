@@ -8,7 +8,7 @@
 #import "GMGridViewLayoutStrategies.h"
 #import "WTURLImageView/WTURLImageView.h"
 
-@interface TableViewLiveSectionGridCell : UITableViewCell <GMGridViewDataSource, GMGridViewActionDelegate, UIScrollViewDelegate>
+@interface TableViewLiveSectionGridCell : UITableViewCell <GMGridViewDataSource, GMGridViewActionDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource>
 {
    
     NSArray * _rssThumbnailUnderwritesOfStationLayout;
@@ -20,6 +20,7 @@
 }
 @property (nonatomic, strong) NSMutableArray *contentArray;
 @property (nonatomic, strong) GMGridView *gridView;
+@property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UINavigationController *navigationController;
 
 @property (nonatomic, assign) BOOL forceToUpdate;
