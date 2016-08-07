@@ -115,7 +115,8 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
        GridViewGeneralCellContentView *contentView = (GridViewGeneralCellContentView *)cell.contentView;
     cell.layer.shadowOpacity = 0;
 
-        contentView.textLabel.text = feedItem.textLabel;
+        contentView.textLabel.text = [NSString stringWithFormat:@"index- %d, %@", index,feedItem.textLabel];
+    
     [contentView.imageView setURL:[NSURL URLWithString:feedItem.imageLink] withPreset:self.preset];
     cell.contentView = contentView;
     NSLog(@"Address index %d - %p:", index, cell);
@@ -145,7 +146,7 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    UIAccessibilityPostNotification(UIAccessibilityAnnouncementDidFinishNotification, nil);
+   // UIAccessibilityPostNotification(UIAccessibilityAnnouncementDidFinishNotification, nil);
 }
 
 
