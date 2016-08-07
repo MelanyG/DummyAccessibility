@@ -17,7 +17,7 @@ typedef NS_ENUM(NSInteger, GridViewCellStyle)
     GridViewCellStyleAddFavoriteItem
 };
 
-@interface GridViewGeneralCellContentView : UIView
+@interface GridViewGeneralCellContentView : UICollectionViewCell
 
 @property (nonatomic) GridViewCellStyle cellStyle;
 @property (nonatomic, strong) WTURLImageView *imageView;
@@ -28,6 +28,6 @@ typedef NS_ENUM(NSInteger, GridViewCellStyle)
 @property (nonatomic, strong) NSMutableArray *accessibilityElements;
 
 - (instancetype)initWithFrame:(CGRect)frame style:(GridViewCellStyle)style;
-
+- (void)configureNewsStyle;
 //- (void) _recalculateAccessibilityElements;
 @end

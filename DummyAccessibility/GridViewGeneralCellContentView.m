@@ -23,6 +23,31 @@ NSInteger const kLiveCategoryHeight = 13;
 
 @implementation GridViewGeneralCellContentView
 
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    if (self)
+    {
+        _accessibilityElements = nil;
+        
+       
+                [self configureNewsStyle];
+    }
+}
+
+- (id)initWithCoder:(NSCoder*)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    
+    if(self)
+    {
+        _accessibilityElements = nil;
+        
+        
+        [self configureNewsStyle];
+    }
+    
+    return self;
+}
 
 - (instancetype)initWithFrame:(CGRect)frame style:(GridViewCellStyle)style
 {
@@ -85,14 +110,14 @@ NSInteger const kLiveCategoryHeight = 13;
      if (overlay != nil)
     {
         self.overlayRect = overlay.frame;
-        overlay.backgroundColor = [UIColor blueColor];
+        overlay.backgroundColor = [UIColor blackColor];
         [self addSubview:overlay];
         
         padding = 10;
         self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(overlay.frame.origin.x + padding, overlay.frame.origin.y, overlay.frame.size.width - 2*padding, overlay.frame.size.height)];
         self.textLabel.backgroundColor = [UIColor clearColor];
         self.textLabel.clipsToBounds = NO;
-        self.textLabel.textColor = [UIColor orangeColor];
+        self.textLabel.textColor = [UIColor whiteColor];
         self.textLabel.textAlignment = NSTextAlignmentLeft;
        // int size = 15;
 
@@ -126,9 +151,9 @@ NSInteger const kLiveCategoryHeight = 13;
 
 - (void)accessibilityElementDidBecomeFocused
 {
-    GMGridView *collectionView = (GMGridView *)self.superview.superview;
-//    [collectionView scrollToItemAtIndexPath:[collectionView indexPathForCell:self] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally|UICollectionViewScrollPositionCenteredVertically animated:NO];
-    UIAccessibilityPostNotification(UIAccessibilityElementFocusedNotification, self);
+    UICollectionView *collectionView = (UICollectionView *)self.superview;
+    [collectionView scrollToItemAtIndexPath:[collectionView indexPathForCell:self] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally|UICollectionViewScrollPositionCenteredVertically animated:YES];
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, self);
 }
 
 @end

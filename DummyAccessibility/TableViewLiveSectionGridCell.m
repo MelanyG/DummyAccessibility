@@ -23,7 +23,7 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 @property (nonatomic) AutoSctollDirection autoSctollDirection;
 @property (nonatomic, strong) UIImage *stationLayoutImageOverlay;
 @property (nonatomic) BOOL isAddOneUnderwritingItem;
-//@property (nonatomic, strong) NSMutableArray *accessibilityElements;
+@property (nonatomic, strong) NSMutableArray *accessibilityElements;
 
 - (void)initAndConfigureGridView;
 
@@ -41,7 +41,7 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
     {
         _contentArray = [NSMutableArray array];
         _contentArray = (NSMutableArray *)array;
-//        _accessibilityElements = [NSMutableArray array];
+        _accessibilityElements = [NSMutableArray array];
         //[self initAndConfigureGridView];
         [self initAndConfigureCollectionView];
     }
@@ -80,8 +80,10 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 - (void)initAndConfigureCollectionView
 {
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc] init];
-    CGRect size = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.height, 196 * 40);
+    //layout.collectionViewContentSize = CGSizeMake(196, 196 * 40);
+    //CGRect size = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.height, 196 * 40);
     _collectionView=[[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:layout];
+    _collectionView.contentSize = CGSizeMake(196, 196 * [_collectionView numberOfItemsInSection:0]);
     _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     UICollectionViewFlowLayout *yourFlowLayout = [[UICollectionViewFlowLayout alloc]init];
     [yourFlowLayout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
@@ -90,8 +92,8 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
     [_collectionView setDataSource:self];
     [_collectionView setDelegate:self];
     
-    [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
-    [_collectionView setBackgroundColor:[UIColor redColor]];
+    [_collectionView registerClass:[GridViewGeneralCellContentView class] forCellWithReuseIdentifier:@"cellIdentifier"];
+    [_collectionView setBackgroundColor:[UIColor yellowColor]];
     [self.contentView addSubview:_collectionView];
 
 }
@@ -106,8 +108,8 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"cellIdentifier" forIndexPath:indexPath];
-    
+    GridViewGeneralCellContentView *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"cellIdentifier" forIndexPath:indexPath];
+    [cell configureNewsStyle];
    // CGSize size = [self UICollectionView:_collectionView layout:nil sizeForItemAtIndexPath:indexPath];
     
    // GMGridViewCell *cell = [gridView dequeueReusableCell];
@@ -120,19 +122,22 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
         cell.layer.shadowRadius = 5;
         cell.layer.shadowPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, 196, 196)].CGPath;
         //cell.contentView = [[GridViewGeneralCellContentView alloc] initWithFrame:cell.frame style:GridViewCellStyleNews ];
-        //            UIAccessibilityElement *ae = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
-        //          [_accessibilityElements addObject:ae];
-        
+    
+    
 
     
     Item *feedItem = _contentArray[indexPath.item];
- GridViewGeneralCellContentView *contentView = [[GridViewGeneralCellContentView alloc] initWithFrame:cell.frame style:GridViewCellStyleNews ];;
+// GridViewGeneralCellContentView *contentView = [[GridViewGeneralCellContentView alloc] initWithFrame:cell.frame style:GridViewCellStyleNews ];;
     cell.layer.shadowOpacity = 0;
     
-   contentView.textLabel.text = feedItem.textLabel;
-    [contentView.imageView setURL:[NSURL URLWithString:feedItem.imageLink] withPreset:self.preset];
-    [cell.contentView addSubview:contentView];
-    NSLog(@"Address index %d - %p:", indexPath.item, cell);
+   cell.textLabel.text = [NSString stringWithFormat:@"index- %d, %@", indexPath.item,feedItem.textLabel];
+    [cell.imageView setURL:[NSURL URLWithString:feedItem.imageLink] withPreset:self.preset];
+     UIAccessibilityElement *ae = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:collectionView];
+    ae.accessibilityFrame = [self convertRect:cell.frame toView:nil];
+    ae.accessibilityLabel = cell.textLabel.text;
+    ae.accessibilityTraits = UIAccessibilityTraitStaticText;
+                  [_accessibilityElements addObject:ae];// [cell.contentView addSubview:contentView];
+    NSLog(@"Address index %d - %p: %@", indexPath.item, cell, cell.textLabel.text);
     return cell;
 
 }
@@ -140,6 +145,18 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     return CGSizeMake(190, 190);
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+   
+    GridViewGeneralCellContentView *cell = (GridViewGeneralCellContentView *)[collectionView cellForItemAtIndexPath:indexPath];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat: @"SELECTED %@", cell.textLabel.text]
+                                                    message:@"Dee dee doo doo."
+                                                   delegate:self
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    [alert show];
+
 }
 
 #pragma mark - GMGridView Delegates
@@ -210,8 +227,10 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    UIAccessibilityPostNotification(UIAccessibilityAnnouncementDidFinishNotification, nil);
-}
+    for (id cell in self.collectionView.visibleCells)
+        if ( [cell accessibilityElementCount] >0 )
+            for (int f = 0; [cell accessibilityElementAtIndex:f]; f++);
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);}
 
 
 - (void)dealloc
@@ -220,111 +239,111 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 }
 
 #pragma mark - Accessibility methods
-//
-//- (BOOL)isAccessibilityElement {
-//    return NO;
-//}
 
-//- (NSInteger)accessibilityElementCount
-//{
-//    return [self.accessibilityElements count];
-//}
-//
-//- (id)accessibilityElementAtIndex:(NSInteger)index
-//{
-//    NSInteger aCount = 0;
-//    if (_accessibilityElements)
-//        aCount = _accessibilityElements.count;
-//    if (index < aCount)
-//    {
-//        if (_accessibilityElements)
+- (BOOL)isAccessibilityElement {
+    return NO;
+}
+
+- (NSInteger)accessibilityElementCount
+{
+    return [self.accessibilityElements count];
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index
+{
+    NSInteger aCount = 0;
+    if (_accessibilityElements)
+        aCount = _accessibilityElements.count;
+    if (index < aCount)
+    {
+        if (_accessibilityElements)
+        {
+            UIAccessibilityElement *ae = _accessibilityElements[index];
+//            CGRect visibleRect = [self convertRect:_gridView.bounds toView:self.window];
+//            CGPoint a = ae.accessibilityActivationPoint;
+//            for (UIAccessibilityElement *acElement in self.accessibilityElements) {
+//                if(CGRectIntersectsRect(acElement.accessibilityFrame, visibleRect))
+                   [self recalculateAccessibilityElementByIndex:index];
+//            }
+//            UIAccessibilityElement *element = _accessibilityElements[index];
+//            CGRect rect = element.accessibilityFrame;
+//            element.accessibilityFrame = [self.window
+//                                          convertRect:rect fromView:self];
+//            return element;
+            return ae;
+        }
+        else
+        {
+            return nil;
+        }
+    }
+    else
+    {
+//        NSInteger subViewIndex = index - aCount;
+//        if (self.subviews.count>0)
 //        {
-//            UIAccessibilityElement *ae = _accessibilityElements[index];
-////            CGRect visibleRect = [self convertRect:_gridView.bounds toView:self.window];
-////            CGPoint a = ae.accessibilityActivationPoint;
-////            for (UIAccessibilityElement *acElement in self.accessibilityElements) {
-////                if(CGRectIntersectsRect(acElement.accessibilityFrame, visibleRect))
-//                    [self recalculateAccessibilityElementByIndex:index];
-////            }
-////            UIAccessibilityElement *element = _accessibilityElements[index];
-////            CGRect rect = element.accessibilityFrame;
-////            element.accessibilityFrame = [self.window
-////                                          convertRect:rect fromView:self];
-////            return element;
-//            return ae;
+//            if (subViewIndex < self.subviews.count)
+//            {
+//                UIView *aView =  self.subviews[subViewIndex] ;
+//                return aView;
+//            }
+//            else
+//            {
+//                return nil;
+//            }
 //        }
 //        else
 //        {
-//            return nil;
-//        }
+            return nil;
+        }
 //    }
-//    else
-//    {
-////        NSInteger subViewIndex = index - aCount;
-////        if (self.subviews.count>0)
-////        {
-////            if (subViewIndex < self.subviews.count)
-////            {
-////                UIView *aView =  self.subviews[subViewIndex] ;
-////                return aView;
-////            }
-////            else
-////            {
-////                return nil;
-////            }
-////        }
-////        else
-////        {
-//            return nil;
-//        }
-////    }
-//}
-//
-//- (NSInteger)indexOfAccessibilityElement:(id)element
-//{
-//    NSInteger anIndex = NSNotFound;
-//    if (_accessibilityElements)
-//    {
-//        anIndex = [_accessibilityElements indexOfObject:element];
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element
+{
+    NSInteger anIndex = NSNotFound;
+    if (_accessibilityElements)
+    {
+        anIndex = [_accessibilityElements indexOfObject:element];
+    }
+    if (anIndex == NSNotFound)
+    {
+        anIndex = [self.subviews indexOfObject:element];
+        if (anIndex != NSNotFound)
+        {
+            anIndex += [self accessibilityElementCount];
+        }
+    }
+       return anIndex;
+}
+
+- (void)recalculateAccessibilityElementByIndex:(NSInteger)index {
+    UIAccessibilityElement *ae = _accessibilityElements[index];
+    CGPoint point = ae.accessibilityActivationPoint;
+    GMGridViewCell * cell =[self.gridView cellForItemAtIndex:index];
+    //PKLabel *theLabel = _labels[index];
+    if(!cell) {
+        CGRect tmp =  CGRectMake(((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.origin.x * (-1),((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.origin.y, ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.size.width, ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.size.height);
+        ae.accessibilityFrame = tmp;
+        ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = NSStringFromCGRect(tmp);
+    } else {
+    CGRect theFrame = [self convertRect:cell.frame fromView:nil];
+     CGRect newFrame =  CGRectMake(theFrame.origin.x, ae.accessibilityFrame.origin.y, ae.accessibilityFrame.size.width, ae.accessibilityFrame.size.height);
+        ae.accessibilityFrame = newFrame;
+((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = NSStringFromCGRect(newFrame);
+    }
+    
+//    if(theFrame.size.width) {
+//    ae.accessibilityFrame = theFrame;
+     //   ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = NSStringFromCGRect(theFrame);
 //    }
-//    if (anIndex == NSNotFound)
-//    {
-//        anIndex = [self.subviews indexOfObject:element];
-//        if (anIndex != NSNotFound)
-//        {
-//            anIndex += [self accessibilityElementCount];
-//        }
-//    }
-//       return anIndex;
-//}
-//
-//- (void)recalculateAccessibilityElementByIndex:(NSInteger)index {
-//    UIAccessibilityElement *ae = _accessibilityElements[index];
-//    CGPoint point = ae.accessibilityActivationPoint;
-//    GMGridViewCell * cell =[self.gridView cellForItemAtIndex:index];
-//    //PKLabel *theLabel = _labels[index];
-//    if(!cell) {
-//        CGRect tmp =  CGRectMake(((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.origin.x * (-1),((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.origin.y, ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.size.width, ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.size.height);
-//        ae.accessibilityFrame = tmp;
-//        ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = NSStringFromCGRect(tmp);
-//    } else {
-//    CGRect theFrame = [self convertRect:cell.frame fromView:nil];
-//     CGRect newFrame =  CGRectMake(theFrame.origin.x, ae.accessibilityFrame.origin.y, ae.accessibilityFrame.size.width, ae.accessibilityFrame.size.height);
-//        ae.accessibilityFrame = newFrame;
-//((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = NSStringFromCGRect(newFrame);
-//    }
+    NSLog(@"%d %@ - %@", index, ae.accessibilityLabel, NSStringFromCGRect(ae.accessibilityFrame));
 //    
-////    if(theFrame.size.width) {
-////    ae.accessibilityFrame = theFrame;
-//     //   ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = NSStringFromCGRect(theFrame);
-////    }
-//    NSLog(@"%d %@ - %@", index, ae.accessibilityLabel, NSStringFromCGRect(ae.accessibilityFrame));
-////    
-////GMGridViewCell * cell =[self.gridView cellForItemAtIndex:index];
-////    CGRect rexr = [self convertRect:cell.frame toView:nil];
-////    ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame = CGRectMake(cell.frame.size.width * index + 5 + 15 * index, rexr.origin.y  , cell.contentView.frame.size.width, cell.contentView.frame.size.height);
-//
-//}
-//
-//
+//GMGridViewCell * cell =[self.gridView cellForItemAtIndex:index];
+//    CGRect rexr = [self convertRect:cell.frame toView:nil];
+//    ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame = CGRectMake(cell.frame.size.width * index + 5 + 15 * index, rexr.origin.y  , cell.contentView.frame.size.width, cell.contentView.frame.size.height);
+
+}
+
+
 @end
