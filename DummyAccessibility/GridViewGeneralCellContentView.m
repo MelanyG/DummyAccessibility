@@ -27,7 +27,7 @@ NSInteger const kLiveCategoryHeight = 13;
     [super awakeFromNib];
     if (self)
     {
-        _accessibilityElements = nil;
+//        _accessibilityElements = nil;
         
        
                 [self configureNewsStyle];
@@ -40,7 +40,7 @@ NSInteger const kLiveCategoryHeight = 13;
     
     if(self)
     {
-        _accessibilityElements = nil;
+//        _accessibilityElements = nil;
         
         
         [self configureNewsStyle];
@@ -54,7 +54,7 @@ NSInteger const kLiveCategoryHeight = 13;
     self = [super initWithFrame:frame];
     if (self)
     {
-         _accessibilityElements = nil;
+//         _accessibilityElements = nil;
 
         switch (style)
         {
@@ -68,6 +68,14 @@ NSInteger const kLiveCategoryHeight = 13;
     
   //  [self setIsAccessibilityElement:NO];
     return self;
+}
+
+- (void)prepareForReuse {
+//    _accessibilityElements = nil;
+    _textLabel = nil;
+    _imageView = nil;
+    NSLog(@"prepare for reuse");
+
 }
 
 - (void)configureNewsStyle
@@ -134,26 +142,113 @@ NSInteger const kLiveCategoryHeight = 13;
 //    [_accessibilityElements addObject:ae];
 
 }
+-(void)dealloc
+{
+    
+//    _accessibilityElements = nil;
+}
 
 
 #pragma mark - Accessibility methods
 
+// method 1 - cell is container
 
-- (BOOL)isAccessibilityElement {
-    return YES;
-}
+//- (void) _recalculateAccessibilityElements
+//{
+//    if (_accessibilityElements)
+//    {
+//        for (int i=0; i<_accessibilityElements.count; i++)
+//        {
+//            UIAccessibilityElement *ae = _accessibilityElements[i];
+//                       ae.accessibilityFrame = [self convertRect:self.frame toView:nil];
+//        }
+//    }
+//}
+//
+//- (void) _recalculateAccessibilityElementByIndex: (NSInteger) index
+//{
+//    UIAccessibilityElement *ae = _accessibilityElements[index];
+//   // PKLabel *theLabel = _labels[index];
+//    CGRect theFrame = self.frame;
+//    ae.accessibilityFrame = [self.window convertRect:theFrame fromView:self];
+//    
+//}
+//
+//- (NSInteger) accessibilityElementCount
+//{
+//    //NSLog (@"Accessibility Count: %i", [_labels count] + [self.subviews count]);
+//    if (_accessibilityElements)
+//        return [_accessibilityElements count];
+//    else
+//        return nil;
+//}
+//
+//- (id) accessibilityElementAtIndex:(NSInteger)index
+//{
+//    //NSLog (@"accessibilityElementAtIndex: %i", index);
+//    NSInteger aCount = 0;
+//    if (_accessibilityElements)
+//        aCount = _accessibilityElements.count;
+//    
+//    if (index < aCount)
+//    {
+//        if (_accessibilityElements)
+//        {
+//            UIAccessibilityElement *ae = _accessibilityElements[index];
+//            [self _recalculateAccessibilityElementByIndex:index];
+//            return ae;
+//        }
+//        else
+//        {
+//            return nil;
+//        }
+//    }
+//    else
+//    {
+//        return nil;
+//    }
+//}
+//
+//- (NSInteger) indexOfAccessibilityElement:(id)element
+//{
+//    //NSLog ( @"indexOfAccessibilityElement: %@", [((UIView *)element) description]);
+//    NSInteger anIndex = NSNotFound;
+//    if (_accessibilityElements)
+//    {
+//        anIndex = [_accessibilityElements indexOfObject:element];
+//    }
+//    if (anIndex == NSNotFound)
+//    {
+//        anIndex = [self.subviews indexOfObject:element];
+//        if (anIndex != NSNotFound)
+//        {
+//            anIndex += [self accessibilityElementCount];
+//        }
+//    }
+//    return anIndex;
+//    
+//}
 
-- (NSString *)accessibilityLabel
-{
-    return [NSString stringWithFormat:@"%p, %@", self.superview, self.textLabel.text];
-    
-}
+//- (BOOL)isAccessibilityElement
+//{
+//    return YES;
+//}
 
-- (void)accessibilityElementDidBecomeFocused
-{
-    UICollectionView *collectionView = (UICollectionView *)self.superview;
-    [collectionView scrollToItemAtIndexPath:[collectionView indexPathForCell:self] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally|UICollectionViewScrollPositionCenteredVertically animated:YES];
-    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, self);
-}
+//method 2 cell is initial Accessible
+
+//- (NSString *)accessibilityLabel {
+//    return [NSString stringWithFormat:@"%p, %@", self, self.textLabel.text];
+//}
+//
+//- (UIAccessibilityTraits)accessibilityTraits {
+//    return UIAccessibilityTraitStaticText;  // Or some other trait that fits better
+//}
+
+//- (void)accessibilityElementDidBecomeFocused
+//{
+//    UICollectionView *collectionView = (UICollectionView *)self.superview;
+////    [collectionView scrollToItemAtIndexPath:[collectionView indexPathForCell:self] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally|UICollectionViewScrollPositionCenteredVertically animated:NO];
+//    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, self);
+//}
 
 @end

@@ -41,7 +41,7 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
     {
         _contentArray = [NSMutableArray array];
         _contentArray = (NSMutableArray *)array;
-        _accessibilityElements = [NSMutableArray array];
+       _accessibilityElements = [NSMutableArray array];
         //[self initAndConfigureGridView];
         [self initAndConfigureCollectionView];
     }
@@ -109,6 +109,21 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     GridViewGeneralCellContentView *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"cellIdentifier" forIndexPath:indexPath];
+   // [NSString stringWithFormat:@"%p",cell];
+    BOOL present = NO;
+    NSInteger index= 0;
+   
+    for(int i=0; i<[_accessibilityElements count]; i++)
+        if([[NSString stringWithFormat:@"%p",cell]isEqualToString:((UIAccessibilityElement *)_accessibilityElements[i]).accessibilityIdentifier] ) {
+        present = YES;
+            
+           UIAccessibilityElement *ae; ae =_accessibilityElements[i];
+            [_accessibilityElements removeObject:ae];
+            index = i;
+            break;
+        }
+  
+    
     [cell configureNewsStyle];
    // CGSize size = [self UICollectionView:_collectionView layout:nil sizeForItemAtIndexPath:indexPath];
     
@@ -132,12 +147,23 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
     
    cell.textLabel.text = [NSString stringWithFormat:@"index- %d, %@", indexPath.item,feedItem.textLabel];
     [cell.imageView setURL:[NSURL URLWithString:feedItem.imageLink] withPreset:self.preset];
+   // ((UIAccessibilityElement *)cell.accessibilityElements[0]).accessibilityLabel =[NSString stringWithFormat:@"%p, %@", cell, feedItem.textLabel];
+ //   if(!present) {
      UIAccessibilityElement *ae = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:collectionView];
     ae.accessibilityFrame = [self convertRect:cell.frame toView:nil];
-    ae.accessibilityLabel = cell.textLabel.text;
+    ae.accessibilityIdentifier = [NSString stringWithFormat: @"%p", cell];
+    ae.accessibilityLabel = [NSString stringWithFormat:@"%p, %@", cell, feedItem.textLabel];
     ae.accessibilityTraits = UIAccessibilityTraitStaticText;
-                  [_accessibilityElements addObject:ae];// [cell.contentView addSubview:contentView];
-    NSLog(@"Address index %d - %p: %@", indexPath.item, cell, cell.textLabel.text);
+                  [_accessibilityElements addObject:ae];
+//    } else {
+       //ae = _accessibilityElements[indexPath.item];
+//        ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame = [self convertRect:cell.frame toView:nil];
+//         ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = [NSString stringWithFormat: @"%p", cell];
+//        ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityLabel = [NSString stringWithFormat:@"%p, %@", cell, feedItem.textLabel];
+       // [_accessibilityElements replaceObjectAtIndex:index withObject:ae];
+//    }
+    // [cell.contentView addSubview:contentView];
+    NSLog(@"Address index %d - %p: %@ acc: %p, %@", indexPath.item, cell, cell.textLabel.text, ae, NSStringFromCGRect(ae.accessibilityFrame));
     return cell;
 
 }
@@ -196,7 +222,7 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
     Item *feedItem = _contentArray[index];
        GridViewGeneralCellContentView *contentView = (GridViewGeneralCellContentView *)cell.contentView;
     cell.layer.shadowOpacity = 0;
-
+    
         contentView.textLabel.text = feedItem.textLabel;
     [contentView.imageView setURL:[NSURL URLWithString:feedItem.imageLink] withPreset:self.preset];
     cell.contentView = contentView;
@@ -229,26 +255,49 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 {
     for (id cell in self.collectionView.visibleCells)
         if ( [cell accessibilityElementCount] >0 )
-            for (int f = 0; [cell accessibilityElementAtIndex:f]; f++);
-    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);}
+            for (int f = 0; [self accessibilityElementAtIndex:f]; f++);
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
+}
 
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+//
+//#pragma mark - Accessibility methods
+//
 
-#pragma mark - Accessibility methods
-
-- (BOOL)isAccessibilityElement {
-    return NO;
-}
-
-- (NSInteger)accessibilityElementCount
-{
+- (NSInteger)accessibilityElementCount {
     return [self.accessibilityElements count];
 }
 
+//- (id)accessibilityElementAtIndex:(NSInteger)index {
+//    if (index == 0) {
+//        return sub1;
+//    } else if (index == 1) {
+//        return sub2;
+//    }
+//    return nil;
+//}
+//
+//- (NSInteger)indexOfAccessibilityElement:(id)element {
+//    if (element == sub1) {
+//        return 0;
+//    } else if (element == sub2) {
+//        return 1;
+//    }
+//    return NSNotFound;
+//}
+- (BOOL)isAccessibilityElement {
+    return NO;
+}
+//
+//- (NSInteger)accessibilityElementCount
+//{
+//    return [self.accessibilityElements count];
+//}
+//
 - (id)accessibilityElementAtIndex:(NSInteger)index
 {
     NSInteger aCount = 0;
@@ -263,7 +312,7 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 //            CGPoint a = ae.accessibilityActivationPoint;
 //            for (UIAccessibilityElement *acElement in self.accessibilityElements) {
 //                if(CGRectIntersectsRect(acElement.accessibilityFrame, visibleRect))
-                   [self recalculateAccessibilityElementByIndex:index];
+//            [self _recalculateAccessibilityElementByIndex:index];
 //            }
 //            UIAccessibilityElement *element = _accessibilityElements[index];
 //            CGRect rect = element.accessibilityFrame;
@@ -299,6 +348,17 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 //    }
 }
 
+- (void) _recalculateAccessibilityElementByIndex: (NSInteger) index
+{
+    UIAccessibilityElement *ae = _accessibilityElements[index];
+    NSIndexPath *one = [NSIndexPath indexPathForItem:index inSection:0];
+    GridViewGeneralCellContentView *theCell = (GridViewGeneralCellContentView *)[_collectionView cellForItemAtIndexPath:one];
+    CGRect theFrame = theCell.frame;
+    ae.accessibilityFrame = [self.window convertRect:theFrame fromView:self.superview];
+    
+}
+
+
 - (NSInteger)indexOfAccessibilityElement:(id)element
 {
     NSInteger anIndex = NSNotFound;
@@ -317,33 +377,35 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
        return anIndex;
 }
 
-- (void)recalculateAccessibilityElementByIndex:(NSInteger)index {
-    UIAccessibilityElement *ae = _accessibilityElements[index];
-    CGPoint point = ae.accessibilityActivationPoint;
-    GMGridViewCell * cell =[self.gridView cellForItemAtIndex:index];
-    //PKLabel *theLabel = _labels[index];
-    if(!cell) {
-        CGRect tmp =  CGRectMake(((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.origin.x * (-1),((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.origin.y, ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.size.width, ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.size.height);
-        ae.accessibilityFrame = tmp;
-        ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = NSStringFromCGRect(tmp);
-    } else {
-    CGRect theFrame = [self convertRect:cell.frame fromView:nil];
-     CGRect newFrame =  CGRectMake(theFrame.origin.x, ae.accessibilityFrame.origin.y, ae.accessibilityFrame.size.width, ae.accessibilityFrame.size.height);
-        ae.accessibilityFrame = newFrame;
-((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = NSStringFromCGRect(newFrame);
-    }
-    
-//    if(theFrame.size.width) {
-//    ae.accessibilityFrame = theFrame;
-     //   ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = NSStringFromCGRect(theFrame);
-//    }
-    NSLog(@"%d %@ - %@", index, ae.accessibilityLabel, NSStringFromCGRect(ae.accessibilityFrame));
-//    
-//GMGridViewCell * cell =[self.gridView cellForItemAtIndex:index];
-//    CGRect rexr = [self convertRect:cell.frame toView:nil];
-//    ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame = CGRectMake(cell.frame.size.width * index + 5 + 15 * index, rexr.origin.y  , cell.contentView.frame.size.width, cell.contentView.frame.size.height);
 
-}
+//
+//- (void)recalculateAccessibilityElementByIndex:(NSInteger)index {
+//    UIAccessibilityElement *ae = _accessibilityElements[index];
+//    CGPoint point = ae.accessibilityActivationPoint;
+//    GMGridViewCell * cell =[self.gridView cellForItemAtIndex:index];
+//    //PKLabel *theLabel = _labels[index];
+//    if(!cell) {
+//        CGRect tmp =  CGRectMake(((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.origin.x * (-1),((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.origin.y, ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.size.width, ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame.size.height);
+//        ae.accessibilityFrame = tmp;
+//        ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = NSStringFromCGRect(tmp);
+//    } else {
+//    CGRect theFrame = [self convertRect:cell.frame fromView:nil];
+//     CGRect newFrame =  CGRectMake(theFrame.origin.x, ae.accessibilityFrame.origin.y, ae.accessibilityFrame.size.width, ae.accessibilityFrame.size.height);
+//        ae.accessibilityFrame = newFrame;
+//((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = NSStringFromCGRect(newFrame);
+//    }
+//    
+////    if(theFrame.size.width) {
+////    ae.accessibilityFrame = theFrame;
+//     //   ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityIdentifier = NSStringFromCGRect(theFrame);
+////    }
+//    NSLog(@"%d %@ - %@", index, ae.accessibilityLabel, NSStringFromCGRect(ae.accessibilityFrame));
+////    
+////GMGridViewCell * cell =[self.gridView cellForItemAtIndex:index];
+////    CGRect rexr = [self convertRect:cell.frame toView:nil];
+////    ((UIAccessibilityElement *)_accessibilityElements[index]).accessibilityFrame = CGRectMake(cell.frame.size.width * index + 5 + 15 * index, rexr.origin.y  , cell.contentView.frame.size.width, cell.contentView.frame.size.height);
+//
+//}
 
 
 @end

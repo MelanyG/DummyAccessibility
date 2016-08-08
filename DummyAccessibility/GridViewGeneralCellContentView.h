@@ -25,7 +25,7 @@ typedef NS_ENUM(NSInteger, GridViewCellStyle)
 @property (nonatomic, strong) UILabel *textLabel;
 @property (nonatomic, strong) UILabel *categoryLabel;
 @property (nonatomic, strong) WTURLImageView *transparentImageView;
-@property (nonatomic, strong) NSMutableArray *accessibilityElements;
+//@property (nonatomic, strong) NSMutableArray *accessibilityElements;
 
 - (instancetype)initWithFrame:(CGRect)frame style:(GridViewCellStyle)style;
 - (void)configureNewsStyle;

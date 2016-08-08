@@ -57,7 +57,7 @@
                             @"http://all4desktop.com/data_images/original/4137469-the-legend-of-zelda-ocarina-of-time.jpg",
                             @"http://all4desktop.com/data_images/original/4137479-sunset-maui-hawaiian-island.jpg",
                             nil];
-    NSArray *accessibilityArray = @[@"Flowers", @"Raven", @"Horse", @"Fire beach", @"White horse", @"Crisis", @"Nature sail", @"Rivals", @"Dead Tiger", @"Lake louise reflections", @"Wooden path", @"icelands", @"diver",@"denali", @"hiro",@"eagle", @"trine",@"dragon", @"sunrise"];
+    NSArray *accessibilityArray = @[@"Flowers", @"Raven", @"Horse", @"Fire beach", @"White horse", @"Crisis", @"Nature sail", @"Rivals", @"Dead Tiger", @"Lake louise reflections", @"Wooden path", @"icelands", @"diver",@"denali", @"hero",@"eagle", @"trine",@"dragon", @"sunrise"];
     for(int i=0; i<19; i++) {
         Item *item = [[Item alloc]init];
         item.imageLink = imageArray[i];
