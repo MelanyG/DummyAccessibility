@@ -64,7 +64,13 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
 //[gmGridView setIsAccessibilityElement:NO];
     [self.gridView removeFromSuperview];
     self.gridView = gmGridView;
-    [self.contentView addSubview:gmGridView];
+    self.trickView = [[UIView alloc]initWithFrame:self.bounds];
+    self.trickView.backgroundColor = [UIColor purpleColor];
+    self.trickView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _trickView.accessibilityElements = @[gmGridView];
+    [self.contentView addSubview:_trickView];
+    self.gridView = gmGridView;
+    [self.trickView addSubview:gmGridView];
     NSLog(@"GridView %p", gmGridView);
     gmGridView.dataSource = self;
     gmGridView.actionDelegate = self;
@@ -96,7 +102,7 @@ typedef NS_ENUM(NSUInteger, AutoSctollDirection)
     CGSize size = [self GMGridView:gridView sizeForItemsInInterfaceOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
     
    GMGridViewCell *cell = [gridView dequeueReusableCell];
-    
+    //[[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     if (!cell)
     {
         cell = [[GMGridViewCell alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
